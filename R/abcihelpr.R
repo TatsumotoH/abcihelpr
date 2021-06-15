@@ -133,14 +133,23 @@ abci_set_work_directory = function(abci_remote_dir=NULL, abci_local_dir=NULL){
 
 
   #do_tune.R, do_tune.shファイルのコピー処理
-  ret = system(
-    glue::glue("cp {do_tune_R} {do_tune_sh} {ssh_config} {abci_local_dir}",
-               do_tune_R = system.file("do_tune.R", package = "abcihelpr"),
-               do_tune_sh = system.file("do_tune.sh", package = "abcihelpr"),
-               ssh_config = system.file("ssh_config", package = "abcihelpr"),
-               abci_local_dir = evalq(abci_local_dir, parent.frame())
-               ),
-    intern = TRUE)
+  # ret = system(
+  #   glue::glue("cp {do_tune_R} {do_tune_sh} {ssh_config} {abci_local_dir}",
+  #              do_tune_R = system.file("do_tune.R", package = "abcihelpr"),
+  #              do_tune_sh = system.file("do_tune.sh", package = "abcihelpr"),
+  #              ssh_config = system.file("ssh_config", package = "abcihelpr"),
+  #              abci_local_dir = evalq(abci_local_dir, parent.frame())
+  #              ),
+  #   intern = TRUE)
+
+  do_tune_R = system.file("do_tune.R", package = "abcihelpr")
+  do_tune_sh = system.file("do_tune.sh", package = "abcihelpr")
+  ssh_config = system.file("ssh_config", package = "abcihelpr")
+  abci_local_dir = evalq(abci_local_dir, parent.frame())
+
+  fs::file_copy(do_tune_R, abci_local_dir, overwrite = TRUE )
+  fs::file_copy(do_tune_sh, abci_local_dir, overwrite = TRUE  )
+  fs::file_copy(ssh_config, abci_local_dir, overwrite = TRUE  )
 
 
   #ssh_config内容を修正する
