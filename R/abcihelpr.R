@@ -116,8 +116,8 @@ abci_set_work_directory = function(abci_remote_dir=NULL, abci_local_dir=NULL){
   #              abci_local_output_dir = abci_local_output_dir ),
   #   intern = TRUE  )
 
-  fs::dir_create(abci_local_params_dir)
-  fs::dir_create(abci_local_output_dir)
+  fs::dir_create(path.expand(abci_local_params_dir))
+  fs::dir_create(path.expand(abci_local_output_dir))
 
 
 
