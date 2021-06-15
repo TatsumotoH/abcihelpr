@@ -130,9 +130,9 @@ abci_set_work_directory = function(abci_remote_dir=NULL, abci_local_dir=NULL){
   #do_tune.R, do_tune.shファイルのコピー処理
   ret = system(
     glue::glue("cp {do_tune_R} {do_tune_sh} {ssh_config} {abci_local_dir}",
-               do_tune_R = system.file("inst/do_tune.R", package = "abcihelpr"),
-               do_tune_sh = system.file("inst/do_tune.sh", package = "abcihelpr"),
-               ssh_config = system.file("inst/ssh_config", package = "abcihelpr"),
+               do_tune_R = system.file("do_tune.R", package = "abcihelpr"),
+               do_tune_sh = system.file("do_tune.sh", package = "abcihelpr"),
+               ssh_config = system.file("ssh_config", package = "abcihelpr"),
                abci_local_dir = evalq(abci_local_dir, parent.frame())
                ),
     intern = TRUE)
