@@ -146,7 +146,7 @@ abci_set_work_directory = function(abci_remote_dir=NULL, abci_local_dir=NULL){
 
   lines =  stringr::str_replace_all(lines, "abci_user_account", abci_user_account)
 
-  readr::write_lines(lines,
+  readr::write_lines(x = lines,
                      file=path_ssh_config)
 
   ssh_config_file <<- path_ssh_config
