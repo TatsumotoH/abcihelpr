@@ -2,29 +2,33 @@
 
 
 
-abci_group_account <<- "your_group_account"
-abci_user_account <<- "your_user_account"
 
-ssh_config_file <<- "~/.ssh/config"
-ssh_identity_file <<- "~/.ssh/id_rsa"
+#' init abci config vals
+#'
+#' @export abci_init
+#'
+abci_init = function(){
+  abci_group_account <<- "your_group_account"
+  abci_user_account <<- "your_user_account"
 
-abci_ssh_cmd <<- "ssh"
-abci_scp_cmp <<- "scp"
+  ssh_config_file <<- "~/.ssh/config"
+  ssh_identity_file <<- "~/.ssh/id_rsa"
 
-
-
-abci_local_dir <<- "~/.tune"
-abci_remote_dir <<- "~/.tune"
-
-#
-abci_remote_params_dir <<- glue::glue("{abci_remote_dir}/params", abci_remote_dir=abci_remote_dir)
-abci_remote_output_dir <<- glue::glue("{abci_remote_dir}/output", abci_remote_dir=abci_remote_dir)
-
-abci_local_params_dir <<- glue::glue("{abci_local_dir}/params", abci_remote_dir=abci_local_dir)
-abci_local_output_dir <<- glue::glue("{abci_local_dir}/output", abci_remote_dir=abci_local_dir)
+  abci_ssh_cmd <<- "ssh"
+  abci_scp_cmp <<- "scp"
 
 
 
+  abci_local_dir <<- "~/.tune"
+  abci_remote_dir <<- "~/.tune"
+
+  #
+  abci_remote_params_dir <<- glue::glue("{abci_remote_dir}/params", abci_remote_dir=abci_remote_dir)
+  abci_remote_output_dir <<- glue::glue("{abci_remote_dir}/output", abci_remote_dir=abci_remote_dir)
+
+  abci_local_params_dir <<- glue::glue("{abci_local_dir}/params", abci_remote_dir=abci_local_dir)
+  abci_local_output_dir <<- glue::glue("{abci_local_dir}/output", abci_remote_dir=abci_local_dir)
+}
 
 #' set abci group account
 #'
