@@ -180,10 +180,10 @@ abci_upload_params = function(grid_tune_id = 1001, tune_wf, tune_folds, param_gr
                           abci_local_params_dir = abci_local_params_dir,
                           grid_tune_id = grid_tune_id)
 
-  tune_r_file = glue::glue("{abci_local_dir}/tune.R",
+  tune_r_file = glue::glue("{abci_local_dir}/do_tune.R",
                            abci_local_dir = abci_local_dir)
 
-  tune_sh_file = glue::glue("{abci_local_dir}/tune.sh",
+  tune_sh_file = glue::glue("{abci_local_dir}/do_tune.sh",
                             abci_local_dir = abci_local_dir)
 
 
