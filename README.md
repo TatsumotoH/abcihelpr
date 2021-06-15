@@ -13,6 +13,9 @@ Getting started
 ``` r
 library(abcihelpr)
 
+# init
+abci_init()
+
 # set your group account
 set_abci_group_account(abci_group_account = "gcaXXXXX")
 
