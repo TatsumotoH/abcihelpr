@@ -139,7 +139,7 @@ abci_set_work_directory = function(abci_remote_dir=NULL, abci_local_dir=NULL){
 
   #ssh_config内容を修正する
   path_ssh_config = paste0(evalq(abci_local_dir, parent.frame()),"/ssh_config")
-  lines = stringr::str_replace_all(readr::read_lines(path_ssh_file),
+  lines = stringr::str_replace_all(readr::read_lines(path_ssh_config),
                                    "path_ssh_identity",
                                    ssh_identity_file)
 
