@@ -118,7 +118,7 @@ abci_set_work_directory = function(abci_remote_dir=NULL, abci_local_dir=NULL){
 
   #remote_dirの準備
   ret = system(
-    glue::glue("{abci_ssh_cmd} -F {ssh_config_file} -i {ssh_identity_file} -t -t es-abci 'mkdir -p  {abci_remote_params_dir}  {abci_remote_output_dir} '",
+    glue::glue("{abci_ssh_cmd} -F {ssh_config_file} -i {ssh_identity_file} es-abci 'mkdir -p  {abci_remote_params_dir}  {abci_remote_output_dir} '",
                abci_ssh_cmd=abci_ssh_cmd,
                ssh_config_file = ssh_config_file,
                ssh_identity_file = ssh_identity_file,
@@ -156,7 +156,10 @@ abci_set_work_directory = function(abci_remote_dir=NULL, abci_local_dir=NULL){
   abci_scp_cmd <<- glue::glue("scp -F {ssh_config_file}", ssh_config_file=ssh_config_file)
 
 
-  #ret
+
+  # do_tune.R, do_tune.shをremoteにコピーする
+
+
 
 }
 
@@ -173,7 +176,16 @@ abci_set_work_directory = function(abci_remote_dir=NULL, abci_local_dir=NULL){
 abci_upload_params = function(grid_tune_id = 1001, tune_wf, tune_folds, param_grid){
 
   #file for tuning parameters
-  param_file = glue::glue("{abci_local_params_dir}/tune_{grid_tune_id}.Rdata", grid_tune_id = grid_tune_id)
+  param_file = glue::glue("{abci_local_params_dir}/tune_{grid_tune_id}.Rdata",
+                          abci_local_params_dir = abci_local_params_dir,
+                          grid_tune_id = grid_tune_id)
+
+  tune_r_file = glue::glue("{abci_local_dir}/tune.R",
+                           abci_local_dir = abci_local_dir)
+
+  tune_sh_file = glue::glue("{abci_local_dir}/tune.sh",
+                            abci_local_dir = abci_local_dir)
+
 
   #save object for tuning into the param file
   save(list = c("grid_tune_id","tune_wf", "tune_folds", "param_grid"),
@@ -197,6 +209,15 @@ abci_upload_params = function(grid_tune_id = 1001, tune_wf, tune_folds, param_gr
   #              intern = TRUE)
 
 
+  #tune fileをリモートにコピーする
+  ret = system(glue::glue("{abci_scp_cmd} {{ {tune_r_file} {tune_sh_file} }} es-abci:{abci_remote_dir}",
+                          abci_scp_cmd = abci_scp_cmd,
+                          tune_r_file = tune_r_file,
+                          tune_sh_file = tune_sh_file,
+                          abci_remote_dir = abci_remote_dir),
+               intern = TRUE)
+
+  #param fileをリモートにコピーする
   ret = system(glue::glue("{abci_scp_cmd} {param_file} es-abci:{abci_remote_params_dir}",
                           abci_scp_cmd = abci_scp_cmd,
                           param_file = param_file,
