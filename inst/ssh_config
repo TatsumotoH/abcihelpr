@@ -1,0 +1,10 @@
+Host as-abci
+  User abci_user_account
+  HostName as.abci.ai
+  IdentityFile path_ssh_identity
+
+Host es-abci
+  User abci_user_account
+  HostName es
+  IdentityFile path_ssh_identity
+  ProxyCommand ssh as-abci -W %h:%p

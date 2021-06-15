@@ -2,7 +2,7 @@
 % Please edit documentation in R/abcihelpr.R
 \name{abci_submit_job_to_qsub}
 \alias{abci_submit_job_to_qsub}
-\title{submit job to qsub query}
+\title{submit a job to qsub (batch query)}
 \usage{
 abci_submit_job_to_qsub(grid_tune_id, grid_tune_start = 1, grid_tune_end = -1)
 }
@@ -14,5 +14,5 @@ abci_submit_job_to_qsub(grid_tune_id, grid_tune_start = 1, grid_tune_end = -1)
 \item{grid_tune_end}{end no. for a subset of a parameter grid to tune. -1 means the end of a parameter grid}
 }
 \description{
-submit job to qsub query
+submit a job to qsub (batch query)
 }
