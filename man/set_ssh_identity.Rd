@@ -6,6 +6,9 @@
 \usage{
 set_ssh_identity(path_ssh_identity)
 }
+\arguments{
+\item{path_ssh_identity}{path to ssh identity}
+}
 \description{
 set ssh identify file
 }

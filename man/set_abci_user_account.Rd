@@ -7,7 +7,7 @@
 set_abci_user_account(abci_user_account)
 }
 \arguments{
-\item{abci_group_account}{user_account that abci gives you}
+\item{abci_group_account}{group_account for abci}
 }
 \description{
 set abci group account

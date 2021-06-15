@@ -11,12 +11,6 @@ ssh_identity_file <<- "~/.ssh/id_rsa"
 abci_ssh_cmd <<- "ssh"
 abci_scp_cmp <<- "scp"
 
-#abci_rsync_cmd <<- "rsync"
-
-# abci_rsync_sshoption = glue::glue("{abci_ssh_cmd} -F {ssh_config_file} -i {ssh_identity_file}",
-#                                   abci_ssh_cmd=abci_ssh_cmd,
-#                                   ssh_config_file = ssh_config_file,
-#                                   ssh_identity_file = ssh_identity_file)
 
 
 abci_local_dir <<- "~/.tune"
@@ -34,7 +28,9 @@ abci_local_output_dir <<- glue::glue("{abci_local_dir}/output", abci_remote_dir=
 
 #' set abci group account
 #'
-#' @param abci_group_account group_account that abci gives you
+#' @param abci_group_account group_account for abci
+#' @export
+#'
 set_abci_group_account = function(abci_group_account){
 
   abci_group_account <<- abci_group_account
@@ -43,7 +39,8 @@ set_abci_group_account = function(abci_group_account){
 
 #' set abci group account
 #'
-#' @param abci_group_account user_account that abci gives you
+#' @param abci_group_account group_account for abci
+#' @export set_abci_user_account
 set_abci_user_account = function(abci_user_account){
 
   abci_user_account <<- abci_user_account
@@ -55,6 +52,8 @@ set_abci_user_account = function(abci_user_account){
 
 
 #' set ssh identify file
+#' @param path_ssh_identity path to ssh identity
+#' @export set_ssh_identity
 #'
 set_ssh_identity = function(path_ssh_identity){
 
@@ -64,8 +63,8 @@ set_ssh_identity = function(path_ssh_identity){
 
 #' print current configuration for abci
 #'
-#' @export
-
+#' @export print_config
+#'
 print_config = function(){
 
   cat("abci_group_account: ", abci_group_account, "\n")
@@ -89,7 +88,8 @@ print_config = function(){
 #' set work directories in remote and local. if work directories do not exist, the function create them.
 #' @param abci_remote_dir Remote work directory for tuning. Default is .tune
 #' @param abci_local_dir Local work directory for tuning. Default is .tune
-#' @export
+#' @export abci_set_work_directory
+#'
 abci_set_work_directory = function(abci_remote_dir=NULL, abci_local_dir=NULL){
 
   if(FALSE == is.null(abci_remote_dir)){
@@ -163,7 +163,8 @@ abci_set_work_directory = function(abci_remote_dir=NULL, abci_local_dir=NULL){
 #' @param tune_wf  workflow object for tuning with a parameter grid
 #' @param tune_folds resample object (rest() object) for tuning
 #' @param param_grid A data frame of tuning combinations
-#' @export
+#' @export abci_upload_params
+#'
 abci_upload_params = function(grid_tune_id = 1001, tune_wf, tune_folds, param_grid){
 
   #file for tuning parameters
@@ -225,7 +226,8 @@ abci_upload_params = function(grid_tune_id = 1001, tune_wf, tune_folds, param_gr
 #' @param grid_tune_id id for tuning with a parameter grid
 #' @param grid_tune_start start no. for a subset of a parameter grid to tune
 #' @param grid_tune_end end no. for a subset of a parameter grid to tune. -1 means the end of a parameter grid
-#' @export
+#' @export abci_submit_job_to_qsub
+#'
 abci_submit_job_to_qsub = function(grid_tune_id, grid_tune_start=1, grid_tune_end=-1){
 
   ret = system(
@@ -247,7 +249,7 @@ abci_submit_job_to_qsub = function(grid_tune_id, grid_tune_start=1, grid_tune_en
 #'
 #' @param grid_tune_id grid_tune_id
 #' @param num_workers number of workers. integer.
-#' @export
+#' @export abci_submit_job_for_workers
 abci_submit_job_for_workers = function(grid_tune_id = NULL, num_workers=1) {
 
   x =  seq(1, dim(param_grid)[1]) #index for a whole grid
@@ -269,7 +271,7 @@ abci_submit_job_for_workers = function(grid_tune_id = NULL, num_workers=1) {
 #' collect tuning results from abci and transfer them to local environment
 #'
 #' @param grid_tune_id id for tuning with a parameter grid
-#' @export
+#' @export abci_collect_tune_res
 #'
 abci_collect_tune_res = function(grid_tune_id = 1001){
 
