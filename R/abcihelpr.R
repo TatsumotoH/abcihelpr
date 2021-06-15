@@ -210,7 +210,7 @@ abci_upload_params = function(grid_tune_id = 1001, tune_wf, tune_folds, param_gr
 
 
   #tune fileをリモートにコピーする
-  ret = system(glue::glue("{abci_scp_cmd} {{ {tune_r_file} {tune_sh_file} }} es-abci:{abci_remote_dir}",
+  ret = system(glue::glue("{abci_scp_cmd}  {tune_r_file} {tune_sh_file}  es-abci:{abci_remote_dir}",
                           abci_scp_cmd = abci_scp_cmd,
                           tune_r_file = tune_r_file,
                           tune_sh_file = tune_sh_file,
