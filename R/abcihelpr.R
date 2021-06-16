@@ -158,15 +158,25 @@ abci_set_work_directory = function(abci_remote_dir=NULL, abci_local_dir=NULL){
 
 
   #remote_dirに、ワーキングディレクトリを作成する
-  ret = system(
-    glue::glue("{abci_ssh_cmd} -F {ssh_config_file} -i {ssh_identity_file} es-abci mkdir -p  '{abci_remote_params_dir}'  '{abci_remote_output_dir}' ",
-               abci_ssh_cmd=abci_ssh_cmd,
-               ssh_config_file = ssh_config_file,
-               ssh_identity_file = ssh_identity_file,
-               abci_remote_params_dir = abci_remote_params_dir,
-               abci_local_params_dir = abci_local_params_dir),
-    intern = TRUE)
+  # ret = system(
+  #   glue::glue("{abci_ssh_cmd} -F {ssh_config_file} -i {ssh_identity_file} es-abci mkdir -p  '{abci_remote_params_dir}'  '{abci_remote_output_dir}' ",
+  #              abci_ssh_cmd=abci_ssh_cmd,
+  #              ssh_config_file = ssh_config_file,
+  #              ssh_identity_file = ssh_identity_file,
+  #              abci_remote_params_dir = abci_remote_params_dir,
+  #              abci_local_params_dir = abci_local_params_dir),
+  #   intern = TRUE)
 
+  str_cmd = glue::glue("{abci_ssh_cmd} -F {ssh_config_file} es-abci mkdir -p '{abci_remote_params_dir}'  '{abci_remote_output_dir}' ",
+             abci_ssh_cmd=abci_ssh_cmd,
+             ssh_config_file = ssh_config_file,
+             abci_remote_params_dir = abci_remote_params_dir,
+             abci_local_params_dir = abci_local_params_dir)
+
+  cat(str_cmd)
+
+  ret = system(str_cmd,
+    intern = TRUE)
 
 
   #configure ssh and scp commands

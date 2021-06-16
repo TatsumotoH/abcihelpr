@@ -11,6 +11,14 @@ remotes::install_github("TatsumotoH/abcihelpr")
 Getting started
 
 ``` r
+library(tidymodels)
+library(workflows)
+library(workflowsets)
+
+library(tidymodels)
+library(embed)
+
+
 library(abcihelpr)
 
 # init
@@ -31,12 +39,7 @@ abci_set_work_directory()
 print_config()
 
 
-library(tidymodels)
-library(workflows)
-library(workflowsets)
 
-library(tidymodels)
-library(embed)
 
 
 
