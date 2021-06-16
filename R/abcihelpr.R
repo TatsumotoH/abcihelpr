@@ -168,24 +168,33 @@ abci_set_work_directory = function(abci_remote_dir=NULL, abci_local_dir=NULL){
   #   intern = TRUE)
 
 
-  str_cmd ="ssh -V"
-  ret = system(str_cmd,
-               intern = TRUE)
-  cat(ret)
 
 
-  str_cmd = glue::glue("{abci_ssh_cmd} -F {ssh_config_file} es-abci mkdir -p '{abci_remote_params_dir}'  '{abci_remote_output_dir}' ",
-             abci_ssh_cmd=abci_ssh_cmd,
-             ssh_config_file = ssh_config_file,
-             abci_remote_params_dir = abci_remote_params_dir,
-             abci_local_params_dir = abci_local_params_dir)
+  #以下のようにする
+  # system2("ssh", c("-F", "~/.tune/ssh_config", "es-abci", "mkdir -p", shQuote("~/.tune/params")))
 
-  cat(str_cmd)
+  ret = system2(abci_ssh_cmd,
+          c("-F",
+            ssh_config_file,
+            "es-abci",
+            "mkdir -p",
+            shQuote(abci_remote_params_dir),
+            shQuote(abci_local_params_dir)
+            )
+          )
 
-  ret = system(str_cmd,
-    intern = TRUE)
-
-  cat(ret)
+  # str_cmd = glue::glue("{abci_ssh_cmd} -F {ssh_config_file} es-abci mkdir -p '{abci_remote_params_dir}'  '{abci_remote_output_dir}' ",
+  #            abci_ssh_cmd=abci_ssh_cmd,
+  #            ssh_config_file = ssh_config_file,
+  #            abci_remote_params_dir = abci_remote_params_dir,
+  #            abci_local_params_dir = abci_local_params_dir)
+  #
+  # cat(str_cmd)
+  #
+  # ret = system(str_cmd,
+  #   intern = TRUE)
+  #
+  # cat(ret)
 
   #configure ssh and scp commands
   #abci_ssh_cmd <<- glue::glue("ssh -F {ssh_config_file}", ssh_config_file=ssh_config_file)
