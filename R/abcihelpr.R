@@ -11,23 +11,25 @@ abci_init = function(){
   abci_group_account <<- "your_group_account"
   abci_user_account <<- "your_user_account"
 
-  ssh_config_file <<- "~/.ssh/config"
-  ssh_identity_file <<- "~/.ssh/id_rsa"
+  ssh_config_file <<- fs::path_expand("~/.ssh/config")
+  ssh_identity_file <<- fs::path_expand("~/.ssh/id_rsa")
 
   abci_ssh_cmd <<- "ssh"
   abci_scp_cmd <<- "scp"
 
 
 
-  abci_local_dir <<- "~/.tune"
   abci_remote_dir <<- "~/.tune"
+  abci_local_dir <<- fs::path_expand("~/.tune")
 
-  #
+
+  #remoteはabciでlinux決め打ち
   abci_remote_params_dir <<- glue::glue("{abci_remote_dir}/params", abci_remote_dir=abci_remote_dir)
   abci_remote_output_dir <<- glue::glue("{abci_remote_dir}/output", abci_remote_dir=abci_remote_dir)
 
-  abci_local_params_dir <<- glue::glue("{abci_local_dir}/params", abci_remote_dir=abci_local_dir)
-  abci_local_output_dir <<- glue::glue("{abci_local_dir}/output", abci_remote_dir=abci_local_dir)
+  #localはmac,windows,linuxの可能性があるので、path展開しておく
+  abci_local_params_dir <<- fs::path_expand(glue::glue("{abci_local_dir}/params", abci_remote_dir=abci_local_dir))
+  abci_local_output_dir <<- fs::path_expand(glue::glue("{abci_local_dir}/output", abci_remote_dir=abci_local_dir))
 }
 
 #' set abci group account
@@ -61,7 +63,7 @@ set_abci_user_account = function(abci_user_account){
 #'
 set_ssh_identity = function(path_ssh_identity){
 
-  ssh_identity_file <<- path_ssh_identity
+  ssh_identity_file <<- fs::path_expand(path_ssh_identity)
 
 }
 
@@ -103,9 +105,9 @@ abci_set_work_directory = function(abci_remote_dir=NULL, abci_local_dir=NULL){
   }
 
   if(FALSE == is.null(abci_local_dir)){
-    abci_local_dir <<- abci_local_dir
-    abci_local_params_dir <<- glue::glue("{abci_local_dir}/params", abci_local_dir=abci_local_dir)
-    abci_local_output_dir <<- glue::glue("{abci_local_dir}/output", abci_local_dir=abci_local_dir)
+    abci_local_dir <<- fs::path_expand(abci_local_dir)
+    abci_local_params_dir <<- fs::path_expand(glue::glue("{abci_local_dir}/params", abci_local_dir=abci_local_dir))
+    abci_local_output_dir <<- fs::path_expand(glue::glue("{abci_local_dir}/output", abci_local_dir=abci_local_dir))
   }
 
 
@@ -116,11 +118,8 @@ abci_set_work_directory = function(abci_remote_dir=NULL, abci_local_dir=NULL){
   #              abci_local_output_dir = abci_local_output_dir ),
   #   intern = TRUE  )
 
-  fs::dir_create(path.expand(abci_local_params_dir))
-  fs::dir_create(path.expand(abci_local_output_dir))
-
-
-
+  fs::dir_create(fs::path_expand(abci_local_params_dir))
+  fs::dir_create(fs::path_expand(abci_local_output_dir))
 
 
 
@@ -137,7 +136,7 @@ abci_set_work_directory = function(abci_remote_dir=NULL, abci_local_dir=NULL){
   do_tune_R = system.file("do_tune.R", package = "abcihelpr")
   do_tune_sh = system.file("do_tune.sh", package = "abcihelpr")
   ssh_config = system.file("ssh_config", package = "abcihelpr")
-  abci_local_dir = evalq(abci_local_dir, parent.frame())
+  abci_local_dir = fs::path_expand(evalq(abci_local_dir, parent.frame()))
 
   fs::file_copy(do_tune_R, abci_local_dir, overwrite = TRUE )
   fs::file_copy(do_tune_sh, abci_local_dir, overwrite = TRUE  )
@@ -145,7 +144,7 @@ abci_set_work_directory = function(abci_remote_dir=NULL, abci_local_dir=NULL){
 
 
   #ssh_configファイルの内容を修正する
-  path_ssh_config = paste0(evalq(abci_local_dir, parent.frame()),"/ssh_config")
+  path_ssh_config = fs::path_expand(paste0(evalq(abci_local_dir, parent.frame()),"/ssh_config"))
   lines = stringr::str_replace_all(readr::read_lines(path_ssh_config),
                                    "path_ssh_identity",
                                    ssh_identity_file)
@@ -194,16 +193,16 @@ abci_set_work_directory = function(abci_remote_dir=NULL, abci_local_dir=NULL){
 #'
 abci_upload_params = function(grid_tune_id = 1001, tune_wf, tune_folds, param_grid){
 
-  #file for tuning parameters
-  param_file = glue::glue("{abci_local_params_dir}/tune_{grid_tune_id}.Rdata",
+  #file for tuning parameters in local
+  param_file = fs::path_expand(glue::glue("{abci_local_params_dir}/tune_{grid_tune_id}.Rdata",
                           abci_local_params_dir = abci_local_params_dir,
-                          grid_tune_id = grid_tune_id)
+                          grid_tune_id = grid_tune_id))
 
-  tune_r_file = glue::glue("{abci_local_dir}/do_tune.R",
-                           abci_local_dir = abci_local_dir)
+  tune_r_file = fs::path_expand(glue::glue("{abci_local_dir}/do_tune.R",
+                           abci_local_dir = abci_local_dir))
 
-  tune_sh_file = glue::glue("{abci_local_dir}/do_tune.sh",
-                            abci_local_dir = abci_local_dir)
+  tune_sh_file = fs::path_expand(glue::glue("{abci_local_dir}/do_tune.sh",
+                            abci_local_dir = abci_local_dir))
 
 
   #save object for tuning into the param file
