@@ -302,18 +302,44 @@ abci_upload_params = function(grid_tune_id = 1001, tune_wf, tune_folds, param_gr
 #'
 abci_submit_job_to_qsub = function(grid_tune_id, grid_tune_start=1, grid_tune_end=-1){
 
-  ret = system(
-    glue::glue("{abci_ssh_cmd} -t -t es-abci qsub -wd '{abci_remote_dir}' -e '{abci_remote_output_dir}' -o  '{abci_remote_output_dir}' -l rt_C.small=1 -g {abci_group_account} -m e '{abci_remote_dir}/do_tune.sh {grid_tune_id} {grid_tune_start} {grid_tune_end}'",
-               abci_ssh_cmd = abci_ssh_cmd,
-               abci_remote_dir = abci_remote_dir,
-               abci_group_account = abci_group_account,
-               abci_remote_dir = abci_remote_dir,
-               grid_tune_id = grid_tune_id,
-               grid_tune_start = grid_tune_start,
-               grid_tune_end = grid_tune_end),
-    intern = TRUE)
+  # ret = system(
+  #   glue::glue("{abci_ssh_cmd} -t -t es-abci qsub -wd '{abci_remote_dir}' -e '{abci_remote_output_dir}' -o  '{abci_remote_output_dir}' -l rt_C.small=1 -g {abci_group_account} -m e '{abci_remote_dir}/do_tune.sh {grid_tune_id} {grid_tune_start} {grid_tune_end}'",
+  #              abci_ssh_cmd = abci_ssh_cmd,
+  #              abci_remote_dir = abci_remote_dir,
+  #              abci_group_account = abci_group_account,
+  #              abci_remote_dir = abci_remote_dir,
+  #              grid_tune_id = grid_tune_id,
+  #              grid_tune_start = grid_tune_start,
+  #              grid_tune_end = grid_tune_end),
+  #   intern = TRUE)
+  #
+  # ret
 
-  ret
+
+  ret = system2(abci_ssh_cmd,
+                c("-t -t",
+                  "-F",
+                  ssh_config_file,
+                  "es-abci",
+                  "qsub",
+                  "-wd",
+                  shQuote(abci_remote_dir),
+                  "-e",
+                  shQuote(abci_remote_output_dir),
+                  "-o",
+                  shQuote(abci_remote_output_dir),
+                  "-l rt_C.small=1",
+                  "-g",
+                  abci_group_account,
+                  "-m e",
+                  shQuote(paste0(abci_remote_dir,"/", "do_tune.sh")),
+                  grid_tune_id,
+                  grid_tune_start,
+                  grid_tune_end
+                )
+          )
+
+
 }
 
 
@@ -355,16 +381,26 @@ abci_collect_tune_res = function(grid_tune_id = 1001){
   #                          abci_local_output_dir = abci_local_output_dir),
   #               intern = TRUE)
 
-  ret = suppressWarnings(
-        system( glue::glue("{abci_scp_cmd} -q  es-abci:'{abci_remote_output_dir}/tune_res_{grid_tune_id}_*.obj' {abci_local_output_dir}",
-                           abci_scp_cmd = abci_scp_cmd,
-                           abci_remote_output_dir = abci_remote_output_dir,
-                           grid_tune_id = grid_tune_id,
-                           abci_local_output_dir = abci_local_output_dir),
-                intern = TRUE,
-                ignore.stderr = TRUE,
-                ignore.stdout = TRUE)
-    )
+  # ret = suppressWarnings(
+  #       system( glue::glue("{abci_scp_cmd} -q  es-abci:'{abci_remote_output_dir}/tune_res_{grid_tune_id}_*.obj' {abci_local_output_dir}",
+  #                          abci_scp_cmd = abci_scp_cmd,
+  #                          abci_remote_output_dir = abci_remote_output_dir,
+  #                          grid_tune_id = grid_tune_id,
+  #                          abci_local_output_dir = abci_local_output_dir),
+  #               intern = TRUE,
+  #               ignore.stderr = TRUE,
+  #               ignore.stdout = TRUE)
+  #   )
+
+  ret = system2(abci_scp_cmd,
+                c("-F",
+                  ssh_config_file,
+                  shQuote(paste0("es-abci:", abci_remote_output_dir,"/","tune_res_", grid_tune_id,"_*.obj")),
+                  abci_local_output_dir
+                )
+  )
+
+
 
   # capture tune_res from obj files
   tune_res = fs::dir_ls(path = glue::glue("{abci_local_output_dir}", abci_local_output_dir=abci_local_output_dir),
