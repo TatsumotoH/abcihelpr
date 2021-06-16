@@ -15,7 +15,7 @@ abci_init = function(){
   ssh_identity_file <<- "~/.ssh/id_rsa"
 
   abci_ssh_cmd <<- "ssh"
-  abci_scp_cmp <<- "scp"
+  abci_scp_cmd <<- "scp"
 
 
 
@@ -121,15 +121,7 @@ abci_set_work_directory = function(abci_remote_dir=NULL, abci_local_dir=NULL){
 
 
 
-  #remote_dirの準備
-  ret = system(
-    glue::glue("{abci_ssh_cmd} -F {ssh_config_file} -i {ssh_identity_file} es-abci 'mkdir -p  {abci_remote_params_dir}  {abci_remote_output_dir} '",
-               abci_ssh_cmd=abci_ssh_cmd,
-               ssh_config_file = ssh_config_file,
-               ssh_identity_file = ssh_identity_file,
-               abci_remote_params_dir = abci_remote_params_dir,
-               abci_local_params_dir = abci_local_params_dir),
-    intern = TRUE)
+
 
 
   #do_tune.R, do_tune.shファイルのコピー処理
@@ -152,7 +144,7 @@ abci_set_work_directory = function(abci_remote_dir=NULL, abci_local_dir=NULL){
   fs::file_copy(ssh_config, abci_local_dir, overwrite = TRUE  )
 
 
-  #ssh_config内容を修正する
+  #ssh_configファイルの内容を修正する
   path_ssh_config = paste0(evalq(abci_local_dir, parent.frame()),"/ssh_config")
   lines = stringr::str_replace_all(readr::read_lines(path_ssh_config),
                                    "path_ssh_identity",
@@ -164,6 +156,19 @@ abci_set_work_directory = function(abci_remote_dir=NULL, abci_local_dir=NULL){
                      file=path_ssh_config)
 
   ssh_config_file <<- path_ssh_config
+
+
+  #remote_dirに、ワーキングディレクトリを作成する
+  ret = system(
+    glue::glue("{abci_ssh_cmd} -F {ssh_config_file} -i {ssh_identity_file} es-abci 'mkdir -p  {abci_remote_params_dir}  {abci_remote_output_dir} '",
+               abci_ssh_cmd=abci_ssh_cmd,
+               ssh_config_file = ssh_config_file,
+               ssh_identity_file = ssh_identity_file,
+               abci_remote_params_dir = abci_remote_params_dir,
+               abci_local_params_dir = abci_local_params_dir),
+    intern = TRUE)
+
+
 
   #configure ssh and scp commands
   abci_ssh_cmd <<- glue::glue("ssh -F {ssh_config_file}", ssh_config_file=ssh_config_file)
