@@ -185,6 +185,7 @@ abci_set_work_directory = function(abci_remote_dir=NULL, abci_local_dir=NULL){
   ret = system(str_cmd,
     intern = TRUE)
 
+  cat(ret)
 
   #configure ssh and scp commands
   #abci_ssh_cmd <<- glue::glue("ssh -F {ssh_config_file}", ssh_config_file=ssh_config_file)
