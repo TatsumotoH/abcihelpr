@@ -174,12 +174,13 @@ abci_set_work_directory = function(abci_remote_dir=NULL, abci_local_dir=NULL){
   # system2("ssh", c("-F", "~/.tune/ssh_config", "es-abci", "mkdir -p", shQuote("~/.tune/params")))
 
   ret = system2(abci_ssh_cmd,
-          c("-F",
+          c("-t -t",
+            "-F",
             ssh_config_file,
             "es-abci",
             "mkdir -p",
             shQuote(abci_remote_params_dir),
-            shQuote(abci_local_params_dir)
+            shQuote(abci_remote_output_dir)
             )
           )
 
