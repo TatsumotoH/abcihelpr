@@ -8,28 +8,37 @@
 #' @export abci_init
 #'
 abci_init = function(){
-  abci_group_account <<- "your_group_account"
-  abci_user_account <<- "your_user_account"
 
-  ssh_config_file <<- fs::path_expand("~/.ssh/config")
-  ssh_identity_file <<- fs::path_expand("~/.ssh/id_rsa")
-
-  abci_ssh_cmd <<- "ssh"
-  abci_scp_cmd <<- "scp"
+  abci_config <<- list()
 
 
 
-  abci_remote_dir <<- "~/.tune"
-  abci_local_dir <<- fs::path_expand("~/.tune")
+  abci_config$abci_group_account <<- "your_group_account"
+  abci_config$abci_user_account <<- "your_user_account"
+
+  abci_config$ssh_config_file <<- fs::path_expand("~/.ssh/config")
+  abci_config$ssh_identity_file <<- fs::path_expand("~/.ssh/id_rsa")
+
+  abci_config$abci_ssh_cmd <<- "ssh"
+  abci_config$abci_scp_cmd <<- "scp"
+
+
+
+  abci_config$abci_remote_dir <<- "~/.tune"
+  abci_config$abci_local_dir <<- fs::path_expand("~/.tune")
 
 
   #remoteはabciでlinux決め打ち
-  abci_remote_params_dir <<- glue::glue("{abci_remote_dir}/params", abci_remote_dir=abci_remote_dir)
-  abci_remote_output_dir <<- glue::glue("{abci_remote_dir}/output", abci_remote_dir=abci_remote_dir)
+  abci_config$abci_remote_params_dir <<- glue::glue("{abci_remote_dir}/params",
+                                                  abci_remote_dir = abci_config$abci_remote_dir)
+  abci_config$abci_remote_output_dir <<- glue::glue("{abci_remote_dir}/output",
+                                                  abci_remote_dir = abci_config$abci_remote_dir)
 
   #localはmac,windows,linuxの可能性があるので、path展開しておく
-  abci_local_params_dir <<- fs::path_expand(glue::glue("{abci_local_dir}/params", abci_remote_dir=abci_local_dir))
-  abci_local_output_dir <<- fs::path_expand(glue::glue("{abci_local_dir}/output", abci_remote_dir=abci_local_dir))
+  abci_config$abci_local_params_dir <<- fs::path_expand(glue::glue("{abci_local_dir}/params",
+                                                                 abci_local_dir = abci_config$abci_local_dir))
+  abci_config$abci_local_output_dir <<- fs::path_expand(glue::glue("{abci_local_dir}/output",
+                                                                 abci_local_dir = abci_config$abci_local_dir))
 }
 
 #' set abci group account
@@ -39,7 +48,7 @@ abci_init = function(){
 #'
 set_abci_group_account = function(abci_group_account){
 
-  abci_group_account <<- abci_group_account
+  abci_config$abci_group_account <<- abci_group_account
 
 }
 
@@ -49,7 +58,7 @@ set_abci_group_account = function(abci_group_account){
 #' @export set_abci_user_account
 set_abci_user_account = function(abci_user_account){
 
-  abci_user_account <<- abci_user_account
+  abci_config$abci_user_account <<- abci_user_account
 
 }
 
@@ -63,7 +72,7 @@ set_abci_user_account = function(abci_user_account){
 #'
 set_ssh_identity = function(path_ssh_identity){
 
-  ssh_identity_file <<- fs::path_expand(path_ssh_identity)
+  abci_config$ssh_identity_file <<- fs::path_expand(path_ssh_identity)
 
 }
 
@@ -73,17 +82,17 @@ set_ssh_identity = function(path_ssh_identity){
 #'
 print_config = function(){
 
-  cat("abci_group_account: ", abci_group_account, "\n")
-  cat("abci_user_account: ", abci_user_account, "\n")
+  cat("abci_group_account: ", abci_config$abci_group_account, "\n")
+  cat("abci_user_account: ", abci_config$abci_user_account, "\n")
 
-  cat("ssh_identity_file: ", ssh_identity_file, "\n")
+  cat("ssh_identity_file: ", abci_config$ssh_identity_file, "\n")
 
-  cat("abci_local_dir: ", abci_local_dir, "\n")
-  cat("abci_remote_dir: ", abci_remote_dir, "\n")
+  cat("abci_local_dir: ", abci_config$abci_local_dir, "\n")
+  cat("abci_remote_dir: ", abci_config$abci_remote_dir, "\n")
 
 
-  cat("abci_ssh_cmd: ", abci_ssh_cmd, "\n")
-  cat("abci_scp_cmd: ", abci_scp_cmd, "\n")
+  cat("abci_ssh_cmd: ", abci_config$abci_ssh_cmd, "\n")
+  cat("abci_scp_cmd: ", abci_config$abci_scp_cmd, "\n")
 
 }
 
@@ -99,112 +108,71 @@ print_config = function(){
 abci_set_work_directory = function(abci_remote_dir=NULL, abci_local_dir=NULL){
 
   if(FALSE == is.null(abci_remote_dir)){
-    abci_remote_dir <<- abci_remote_dir
-    abci_remote_params_dir <<- glue::glue("{abci_remote_dir}/params", abci_remote_dir=abci_remote_dir)
-    abci_remote_output_dir <<- glue::glue("{abci_remote_dir}/output", abci_remote_dir=abci_remote_dir)
+    abci_config$abci_remote_dir <<- abci_remote_dir
+    abci_config$abci_remote_params_dir <<- glue::glue("{abci_remote_dir}/params",
+                                                    abci_remote_dir = abci_remote_dir)
+    abci_config$abci_remote_output_dir <<- glue::glue("{abci_remote_dir}/output",
+                                                    abci_remote_dir = abci_remote_dir)
   }
 
   if(FALSE == is.null(abci_local_dir)){
-    abci_local_dir <<- fs::path_expand(abci_local_dir)
-    abci_local_params_dir <<- fs::path_expand(glue::glue("{abci_local_dir}/params", abci_local_dir=abci_local_dir))
-    abci_local_output_dir <<- fs::path_expand(glue::glue("{abci_local_dir}/output", abci_local_dir=abci_local_dir))
+    abci_config$abci_local_dir <<- fs::path_expand(abci_local_dir)
+    abci_config$abci_local_params_dir <<- fs::path_expand(
+                                            glue::glue("{abci_local_dir}/params",
+                                                       abci_local_dir = abci_local_dir))
+    abci_config$abci_local_output_dir <<- fs::path_expand(
+                                            glue::glue("{abci_local_dir}/output",
+                                                        abci_local_dir = abci_local_dir))
   }
 
 
-  #local_dirの準備
-  # ret = system(
-  #   glue::glue("mkdir -p {abci_local_params_dir} {abci_local_output_dir} ",
-  #              abci_local_params_dir = abci_local_params_dir,
-  #              abci_local_output_dir = abci_local_output_dir ),
-  #   intern = TRUE  )
-
-  fs::dir_create(fs::path_expand(abci_local_params_dir))
-  fs::dir_create(fs::path_expand(abci_local_output_dir))
+  #prepare for local_dir
+  fs::dir_create(fs::path_expand(abci_config$abci_local_params_dir))
+  fs::dir_create(fs::path_expand(abci_config$abci_local_output_dir))
 
 
 
-  #do_tune.R, do_tune.shファイルのコピー処理
-  # ret = system(
-  #   glue::glue("cp {do_tune_R} {do_tune_sh} {ssh_config} {abci_local_dir}",
-  #              do_tune_R = system.file("do_tune.R", package = "abcihelpr"),
-  #              do_tune_sh = system.file("do_tune.sh", package = "abcihelpr"),
-  #              ssh_config = system.file("ssh_config", package = "abcihelpr"),
-  #              abci_local_dir = evalq(abci_local_dir, parent.frame())
-  #              ),
-  #   intern = TRUE)
-
+  #copy tune files(do_tune.R, do_tune.sh)ファイルのコピー処理
   do_tune_R = system.file("do_tune.R", package = "abcihelpr")
   do_tune_sh = system.file("do_tune.sh", package = "abcihelpr")
   ssh_config = system.file("ssh_config", package = "abcihelpr")
-  abci_local_dir = fs::path_expand(evalq(abci_local_dir, parent.frame()))
+  abci_local_dir = fs::path_expand(
+                    evalq(abci_config$abci_local_dir, parent.frame()))
 
-  fs::file_copy(do_tune_R, abci_local_dir, overwrite = TRUE )
-  fs::file_copy(do_tune_sh, abci_local_dir, overwrite = TRUE  )
-  fs::file_copy(ssh_config, abci_local_dir, overwrite = TRUE  )
+  fs::file_copy(do_tune_R, abci_config$abci_local_dir, overwrite = TRUE )
+  fs::file_copy(do_tune_sh, abci_config$abci_local_dir, overwrite = TRUE  )
+  fs::file_copy(ssh_config, abci_config$abci_local_dir, overwrite = TRUE  )
 
 
-  #ssh_configファイルの内容を修正する
-  path_ssh_config = fs::path_expand(paste0(evalq(abci_local_dir, parent.frame()),"/ssh_config"))
+  #modify ssh_config file
+  path_ssh_config = fs::path_expand(
+                            paste0(evalq(abci_config$abci_local_dir, parent.frame()),"/ssh_config"))
+
   lines = stringr::str_replace_all(readr::read_lines(path_ssh_config),
                                    "path_ssh_identity",
-                                   ssh_identity_file)
+                                   abci_config$ssh_identity_file)
 
-  lines =  stringr::str_replace_all(lines, "abci_user_account", abci_user_account)
+  lines =  stringr::str_replace_all(lines,
+                                    "abci_user_account",
+                                    abci_config$abci_user_account)
 
   readr::write_lines(x = lines,
-                     file=path_ssh_config)
+                     file = path_ssh_config)
 
-  ssh_config_file <<- path_ssh_config
-
-
-  #remote_dirに、ワーキングディレクトリを作成する
-  # ret = system(
-  #   glue::glue("{abci_ssh_cmd} -F {ssh_config_file} -i {ssh_identity_file} es-abci mkdir -p  '{abci_remote_params_dir}'  '{abci_remote_output_dir}' ",
-  #              abci_ssh_cmd=abci_ssh_cmd,
-  #              ssh_config_file = ssh_config_file,
-  #              ssh_identity_file = ssh_identity_file,
-  #              abci_remote_params_dir = abci_remote_params_dir,
-  #              abci_local_params_dir = abci_local_params_dir),
-  #   intern = TRUE)
+  abci_config$ssh_config_file = path_ssh_config
 
 
-
-
-  #以下のようにする
-  # system2("ssh", c("-F", "~/.tune/ssh_config", "es-abci", "mkdir -p", shQuote("~/.tune/params")))
-
-  ret = system2(abci_ssh_cmd,
+  #create work directory in remote machine
+   ret = system2(abci_config$abci_ssh_cmd,
           c("-t -t",
             "-F",
-            ssh_config_file,
+            abci_config$ssh_config_file,
             "es-abci",
             "mkdir -p",
-            shQuote(abci_remote_params_dir),
-            shQuote(abci_remote_output_dir)
+            shQuote(abci_config$abci_remote_params_dir),
+            shQuote(abci_config$abci_remote_output_dir)
             )
           )
-
-  # str_cmd = glue::glue("{abci_ssh_cmd} -F {ssh_config_file} es-abci mkdir -p '{abci_remote_params_dir}'  '{abci_remote_output_dir}' ",
-  #            abci_ssh_cmd=abci_ssh_cmd,
-  #            ssh_config_file = ssh_config_file,
-  #            abci_remote_params_dir = abci_remote_params_dir,
-  #            abci_local_params_dir = abci_local_params_dir)
-  #
-  # cat(str_cmd)
-  #
-  # ret = system(str_cmd,
-  #   intern = TRUE)
-  #
-  # cat(ret)
-
-  #configure ssh and scp commands
-  #abci_ssh_cmd <<- glue::glue("ssh -F {ssh_config_file}", ssh_config_file=ssh_config_file)
-  #abci_scp_cmd <<- glue::glue("scp -F {ssh_config_file}", ssh_config_file=ssh_config_file)
-
-
-
-  # do_tune.R, do_tune.shをremoteにコピーする
-
 
 
 }
@@ -223,14 +191,14 @@ abci_upload_params = function(grid_tune_id = 1001, tune_wf, tune_folds, param_gr
 
   #file for tuning parameters in local
   param_file = fs::path_expand(glue::glue("{abci_local_params_dir}/tune_{grid_tune_id}.Rdata",
-                          abci_local_params_dir = abci_local_params_dir,
+                          abci_local_params_dir = abci_config$abci_local_params_dir,
                           grid_tune_id = grid_tune_id))
 
   tune_r_file = fs::path_expand(glue::glue("{abci_local_dir}/do_tune.R",
-                           abci_local_dir = abci_local_dir))
+                           abci_local_dir = abci_config$abci_local_dir))
 
   tune_sh_file = fs::path_expand(glue::glue("{abci_local_dir}/do_tune.sh",
-                            abci_local_dir = abci_local_dir))
+                            abci_local_dir = abci_config$abci_local_dir))
 
 
   #save object for tuning into the param file
@@ -238,56 +206,40 @@ abci_upload_params = function(grid_tune_id = 1001, tune_wf, tune_folds, param_gr
        file = param_file
   )
 
-  #uploadする
-  #後ほど、ここの処理をrsyncでなくscpを使うようにする
-  # ret = system(glue::glue("{abci_rsync_cmd} -av {abci_local_dir}/ es-abci:{abci_remote_dir}",
-  #                         abci_rsync_cmd = abci_rsync_cmd,
-  #                         abci_local_dir = abci_local_dir,
-  #                         abci_remote_dir = abci_remote_dir),
-  #              intern = TRUE)
 
-
-  # ret = system(glue::glue("{abci_scp_cmd} -F {ssh_config_file} {param_file} es-abci:{abci_remote_dir}",
-  #                         abci_scp_cmd = abci_scp_cmd,
-  #                         ssh_config_file = ,
-  #                         param_file = param_file,
-  #                         abci_remote_dir = abci_remote_dir),
-  #              intern = TRUE)
-
-
-  #tune fileをリモートにコピーする
-  ret = system(glue::glue("{abci_scp_cmd}  {tune_r_file} {tune_sh_file}  es-abci:{abci_remote_dir}",
-                          abci_scp_cmd = abci_scp_cmd,
+  #copy tune files to remote machine
+  ret = system(glue::glue("{abci_scp_cmd} {tune_r_file} {tune_sh_file}  es-abci:{abci_remote_dir}",
+                          abci_scp_cmd = abci_config$abci_scp_cmd,
                           tune_r_file = tune_r_file,
                           tune_sh_file = tune_sh_file,
-                          abci_remote_dir = abci_remote_dir),
+                          abci_remote_dir = abci_config$abci_remote_dir),
                intern = TRUE)
 
-  #param fileをリモートにコピーする
+  #copy a param file to remote machine
   ret = system(glue::glue("{abci_scp_cmd} {param_file} es-abci:{abci_remote_params_dir}",
-                          abci_scp_cmd = abci_scp_cmd,
+                          abci_scp_cmd = abci_config$abci_scp_cmd,
                           param_file = param_file,
-                          abci_remote_params_dir = abci_remote_params_dir),
+                          abci_remote_params_dir = abci_config$abci_remote_params_dir),
                intern = TRUE)
 
   #clean output directory in local machine
   prev_obj_files = fs::dir_ls(
-    path = abci_local_output_dir,
-    regexp = glue::glue("tune_res_{grid_tune_id}_.*\\.obj", grid_tune_id=grid_tune_id)
+    path = abci_config$abci_local_output_dir,
+    regexp = glue::glue("tune_res_{grid_tune_id}_.*\\.obj", grid_tune_id = grid_tune_id)
     )
 
   fs::file_delete(prev_obj_files)
 
   #clean output directory in remote machine
   ret = system(glue::glue("{abci_ssh_cmd} es-abci rm -f '{abci_remote_output_dir}/tune_res_{grid_tune_id}_*.obj'",
-                          abci_ssh_cmd = abci_ssh_cmd,
-                          abci_remote_output_dir = abci_remote_output_dir,
+                          abci_ssh_cmd = abci_config$abci_ssh_cmd,
+                          abci_remote_output_dir = abci_config$abci_remote_output_dir,
                           grid_tune_id = grid_tune_id
                           )
   )
 
 
-  ret
+  # ret
 }
 
 
@@ -302,37 +254,24 @@ abci_upload_params = function(grid_tune_id = 1001, tune_wf, tune_folds, param_gr
 #'
 abci_submit_job_to_qsub = function(grid_tune_id, grid_tune_start=1, grid_tune_end=-1){
 
-  # ret = system(
-  #   glue::glue("{abci_ssh_cmd} -t -t es-abci qsub -wd '{abci_remote_dir}' -e '{abci_remote_output_dir}' -o  '{abci_remote_output_dir}' -l rt_C.small=1 -g {abci_group_account} -m e '{abci_remote_dir}/do_tune.sh {grid_tune_id} {grid_tune_start} {grid_tune_end}'",
-  #              abci_ssh_cmd = abci_ssh_cmd,
-  #              abci_remote_dir = abci_remote_dir,
-  #              abci_group_account = abci_group_account,
-  #              abci_remote_dir = abci_remote_dir,
-  #              grid_tune_id = grid_tune_id,
-  #              grid_tune_start = grid_tune_start,
-  #              grid_tune_end = grid_tune_end),
-  #   intern = TRUE)
-  #
-  # ret
-
-
-  ret = system2(abci_ssh_cmd,
+  #submit job to qsub queue
+  ret = system2(abci_config$abci_ssh_cmd,
                 c("-t -t",
                   "-F",
-                  ssh_config_file,
+                  abci_config$ssh_config_file,
                   "es-abci",
                   "qsub",
                   "-wd",
-                  shQuote(abci_remote_dir),
+                  shQuote(abci_config$abci_remote_dir),
                   "-e",
-                  shQuote(abci_remote_output_dir),
+                  shQuote(abci_config$abci_remote_output_dir),
                   "-o",
-                  shQuote(abci_remote_output_dir),
+                  shQuote(abci_config$abci_remote_output_dir),
                   "-l rt_C.small=1",
                   "-g",
-                  abci_group_account,
+                  abci_config$abci_group_account,
                   "-m e",
-                  shQuote(paste0(abci_remote_dir,"/", "do_tune.sh")),
+                  shQuote(paste0(abci_config$abci_remote_dir,"/", "do_tune.sh")),
                   grid_tune_id,
                   grid_tune_start,
                   grid_tune_end
@@ -359,8 +298,8 @@ abci_submit_job_for_workers = function(grid_tune_id = NULL, num_workers=1) {
     end = range(y[[ind]])[2]
 
     abci_submit_job_to_qsub(grid_tune_id = grid_tune_id,
-                            grid_tune_start=start,
-                            grid_tune_end=end)
+                            grid_tune_start = start,
+                            grid_tune_end = end)
   }
 
 
@@ -373,37 +312,21 @@ abci_submit_job_for_workers = function(grid_tune_id = NULL, num_workers=1) {
 #'
 abci_collect_tune_res = function(grid_tune_id = 1001){
 
-  #
-  # ret = system( glue::glue("{abci_rsync_cmd}  -av  es-abci:'{abci_remote_output_dir}/*.obj' {abci_local_output_dir}",
-  #                          abci_rsync_cmd = abci_rsync_cmd,
-  #                          abci_rsync_sshoption = abci_rsync_sshoption,
-  #                          abci_remote_output_dir = abci_remote_output_dir,
-  #                          abci_local_output_dir = abci_local_output_dir),
-  #               intern = TRUE)
 
-  # ret = suppressWarnings(
-  #       system( glue::glue("{abci_scp_cmd} -q  es-abci:'{abci_remote_output_dir}/tune_res_{grid_tune_id}_*.obj' {abci_local_output_dir}",
-  #                          abci_scp_cmd = abci_scp_cmd,
-  #                          abci_remote_output_dir = abci_remote_output_dir,
-  #                          grid_tune_id = grid_tune_id,
-  #                          abci_local_output_dir = abci_local_output_dir),
-  #               intern = TRUE,
-  #               ignore.stderr = TRUE,
-  #               ignore.stdout = TRUE)
-  #   )
-
-  ret = system2(abci_scp_cmd,
+  #copy tune_res obj files from remote to local
+  ret = system2(abci_config$abci_scp_cmd,
                 c("-F",
-                  ssh_config_file,
-                  shQuote(paste0("es-abci:", abci_remote_output_dir,"/","tune_res_", grid_tune_id,"_*.obj")),
-                  abci_local_output_dir
+                  abci_config$ssh_config_file,
+                  shQuote(paste0("es-abci:", abci_config$abci_remote_output_dir,"/","tune_res_", grid_tune_id,"_*.obj")),
+                  abci_config$abci_local_output_dir
                 )
   )
 
 
 
   # capture tune_res from obj files
-  tune_res = fs::dir_ls(path = glue::glue("{abci_local_output_dir}", abci_local_output_dir=abci_local_output_dir),
+  tune_res = fs::dir_ls(path = glue::glue("{abci_local_output_dir}",
+                                          abci_local_output_dir = abci_config$abci_local_output_dir),
                       regexp = glue::glue("tune_res_{grid_tune_id}_.+\\.obj", grid_tune_id = grid_tune_id)
                     ) %>%
     map( ~ readRDS(.x))
