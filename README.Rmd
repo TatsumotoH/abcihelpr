@@ -41,13 +41,7 @@ set_ssh_identity(path_ssh_identity = "~/.ssh/id_rsa")
 
 abci_set_work_directory()
 
-
 print_config()
-
-
-
-
-
 
 #for parallel processing
 doParallel::registerDoParallel()
@@ -57,7 +51,6 @@ data(ames)
 data_split = initial_split(ames, strata = "Sale_Price", prop = 0.75)
 data_train = training(data_split)
 data_test  = testing(data_split)
-
 
 tune_folds = vfold_cv(data_train, v=5)
 
@@ -87,10 +80,10 @@ tune_params = parameters(tune_wf)
 param_finalized = finalize(tune_params, x=data_train)
 param_grid = grid_random(param_finalized, size=5)
 
-#
+# identtifier for your task
 trg_grid_tune_id = 1004
 
-#upload a parameter grid to abci
+#upload a parameter grid to ABCI
 abci_upload_params(grid_tune_id = trg_grid_tune_id,
                    tune_wf = tune_wf,
                    tune_folds = tune_folds,
@@ -104,7 +97,7 @@ abci_submit_job_for_workers(grid_tune_id = trg_grid_tune_id,
 # you will recieve an email from abci when the submitted job is done.
 #
 
-# collect tuning results from abci
+# collect tuning results from ABCI
 tune_res_set = abci_collect_tune_res(grid_tune_id = trg_grid_tune_id)
 
 # convert tuning results as workflow_set
@@ -114,6 +107,7 @@ tune_wfs = as_workflow_set(!!!tune_res_set)
 tune_wfs %>% rank_results(rank_metric = "rmse", select_best = TRUE) %>%
   filter(rank == 1, .metric == "rmse")
 
+# workflow id of best performance
 wfid = tune_wfs %>%
   rank_results(rank_metric = "rmse", select_best = TRUE) %>%
   filter(rank == 1,  .metric == "rmse") %>%
@@ -124,11 +118,9 @@ tune_res = tune_wfs %>%
   pull_workflow_set_result(wfid)
 
 
-
 ## display results of performances
 tune_res %>%
   collect_metrics()
-
 
 
 ## show best model

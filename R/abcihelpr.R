@@ -171,9 +171,10 @@ abci_set_work_directory = function(abci_remote_dir=NULL, abci_local_dir=NULL){
             "mkdir -p",
             shQuote(abci_config$abci_remote_params_dir),
             shQuote(abci_config$abci_remote_output_dir)
-            )
+            ),
+          stdout = NULL,
+          stderr = NULL
           )
-
 
 }
 
@@ -275,7 +276,9 @@ abci_submit_job_to_qsub = function(grid_tune_id, grid_tune_start=1, grid_tune_en
                   grid_tune_id,
                   grid_tune_start,
                   grid_tune_end
-                )
+                ),
+              stdout = NULL,
+              stderr = NULL
           )
 
 
@@ -319,7 +322,9 @@ abci_collect_tune_res = function(grid_tune_id = 1001){
                   abci_config$ssh_config_file,
                   shQuote(paste0("es-abci:", abci_config$abci_remote_output_dir,"/","tune_res_", grid_tune_id,"_*.obj")),
                   abci_config$abci_local_output_dir
-                )
+                ),
+              stdout = NULL,
+              stderr = NULL
   )
 
 
