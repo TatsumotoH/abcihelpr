@@ -214,14 +214,17 @@ abci_upload_params = function(grid_tune_id = 1001, tune_wf, tune_folds, param_gr
                           tune_r_file = tune_r_file,
                           tune_sh_file = tune_sh_file,
                           abci_remote_dir = abci_config$abci_remote_dir),
-               intern = TRUE)
+               intern = TRUE,
+               ignore.stdout = TRUE, ignore.stderr = TRUE)
+
 
   #copy a param file to remote machine
   ret = system(glue::glue("{abci_scp_cmd} {param_file} es-abci:{abci_remote_params_dir}",
                           abci_scp_cmd = abci_config$abci_scp_cmd,
                           param_file = param_file,
                           abci_remote_params_dir = abci_config$abci_remote_params_dir),
-               intern = TRUE)
+               intern = TRUE,
+               ignore.stdout = TRUE, ignore.stderr = TRUE)
 
   #clean output directory in local machine
   prev_obj_files = fs::dir_ls(
@@ -236,8 +239,9 @@ abci_upload_params = function(grid_tune_id = 1001, tune_wf, tune_folds, param_gr
                           abci_ssh_cmd = abci_config$abci_ssh_cmd,
                           abci_remote_output_dir = abci_config$abci_remote_output_dir,
                           grid_tune_id = grid_tune_id
-                          )
-  )
+                          ),
+               intern = TRUE,
+               ignore.stdout = TRUE, ignore.stderr = TRUE)
 
 
   # ret
@@ -272,6 +276,8 @@ abci_submit_job_to_qsub = function(grid_tune_id, grid_tune_start=1, grid_tune_en
                   "-g",
                   abci_config$abci_group_account,
                   "-m e",
+                  "-N",
+                  paste0("gti_",grid_tune_id),
                   shQuote(paste0(abci_config$abci_remote_dir,"/", "do_tune.sh")),
                   grid_tune_id,
                   grid_tune_start,
@@ -281,6 +287,7 @@ abci_submit_job_to_qsub = function(grid_tune_id, grid_tune_start=1, grid_tune_en
               stderr = NULL
           )
 
+  return(ret)
 
 }
 
@@ -300,9 +307,11 @@ abci_submit_job_for_workers = function(grid_tune_id = NULL, num_workers=1) {
     start = range(y[[ind]])[1]
     end = range(y[[ind]])[2]
 
-    abci_submit_job_to_qsub(grid_tune_id = grid_tune_id,
+    ret = abci_submit_job_to_qsub(grid_tune_id = grid_tune_id,
                             grid_tune_start = start,
                             grid_tune_end = end)
+
+    cat(ret)
   }
 
 
@@ -342,6 +351,22 @@ abci_collect_tune_res = function(grid_tune_id = 1001){
 
 }
 
+# report status of job submitted in abci
 
+# abci_status_job = function(grid_tune_id){
+#
+#   #submit job to qsub queue
+#   ret = system2(abci_config$abci_ssh_cmd,
+#                 c("-t -t",
+#                   "-F",
+#                   abci_config$ssh_config_file,
+#                   "es-abci",
+#                   "qstat"
+#                 ),
+#                 stdout = NULL,
+#                 stderr = NULL
+#   )
+#
+# }
 
 
