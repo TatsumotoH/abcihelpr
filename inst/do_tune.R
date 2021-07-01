@@ -22,7 +22,26 @@ grid_tune_end = args[3]
 param_file = paste0("./params/tune_", f_grid_tune_id, ".Rdata")
 
 #load("tune.Rdata")
-load(param_file)
+#load(param_file)
+
+saved_obj = readRDS(param_file)
+
+grid_tune_id = saved_obj$grid_tune_id
+tune_wf = saved_obj$tune_wf
+tune_folds = saved_obj$tune_folds
+pkg_names = saved_obj$pkg_names
+param_grid = saved_obj$param_grid
+
+
+#load additional packages
+for(pkg_name in pkg_names) {
+  if (!require(pkg_name, character.only = TRUE)) {
+    install.packages(pkg_name)
+    require(pkg_name, character.only = TRUE)
+  }
+}
+
+
 
 # set all the param_grid to target if grid_tune is -1
 if( grid_tune_end == -1){

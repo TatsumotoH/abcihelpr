@@ -185,6 +185,7 @@ abci_set_work_directory = function(abci_remote_dir=NULL, abci_local_dir=NULL){
 #' @param grid_tune_id id for a parameter grid
 #' @param tune_wf  workflow object for tuning with a parameter grid
 #' @param tune_folds resample object (rest() object) for tuning
+#' @param pkg_names  additional packages to load in the tuning script
 #' @param param_grid A data frame of tuning combinations
 #' @export abci_upload_params
 #'

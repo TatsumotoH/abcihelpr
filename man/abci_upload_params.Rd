@@ -4,7 +4,13 @@
 \alias{abci_upload_params}
 \title{upload a parameter grid to abci}
 \usage{
-abci_upload_params(grid_tune_id = 1001, tune_wf, tune_folds, param_grid)
+abci_upload_params(
+  grid_tune_id = 1001,
+  tune_wf,
+  tune_folds,
+  pkg_names = NULL,
+  param_grid
+)
 }
 \arguments{
 \item{grid_tune_id}{id for a parameter grid}
@@ -12,6 +18,8 @@ abci_upload_params(grid_tune_id = 1001, tune_wf, tune_folds, param_grid)
 \item{tune_wf}{workflow object for tuning with a parameter grid}
 
 \item{tune_folds}{resample object (rest() object) for tuning}
+
+\item{pkg_names}{additional packages to load in the tuning script}
 
 \item{param_grid}{A data frame of tuning combinations}
 }
