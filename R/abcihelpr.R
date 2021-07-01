@@ -188,7 +188,7 @@ abci_set_work_directory = function(abci_remote_dir=NULL, abci_local_dir=NULL){
 #' @param param_grid A data frame of tuning combinations
 #' @export abci_upload_params
 #'
-abci_upload_params = function(grid_tune_id = 1001, tune_wf, tune_folds, param_grid){
+abci_upload_params = function(grid_tune_id = 1001, tune_wf, tune_folds, pkg_names=NULL, param_grid){
 
   #file for tuning parameters in local
   param_file = fs::path_expand(glue::glue("{abci_local_params_dir}/tune_{grid_tune_id}.Rdata",
@@ -203,7 +203,11 @@ abci_upload_params = function(grid_tune_id = 1001, tune_wf, tune_folds, param_gr
 
 
   #save object for tuning into the param file
-  save(list = c("grid_tune_id","tune_wf", "tune_folds", "param_grid"),
+  saveRDS(list(grid_tune_id=grid_tune_id,
+               tune_wf=tune_wf,
+               tune_folds=tune_folds,
+               pkg_names=pkg_names,
+               param_grid=param_grid),
        file = param_file
   )
 
@@ -370,3 +374,10 @@ abci_collect_tune_res = function(grid_tune_id = 1001){
 # }
 
 
+#
+# ライブラリやオブジェクトを追加する場合の関数
+#
+# abci_config = new_abci_config(multidplyr_n_cluster)
+# cluster_library(abci_config, "purrr")
+# cluster_copy(abci_config, "f")
+#
