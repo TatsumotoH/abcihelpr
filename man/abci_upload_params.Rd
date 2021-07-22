@@ -23,6 +23,8 @@ abci_upload_params(
 \item{pkg_names}{additional packages to load in the tuning script}
 
 \item{param_grid}{A data frame of tuning combinations}
+
+\item{fns}{character vector of function names to be exported}
 }
 \description{
 upload a parameter grid to abci
