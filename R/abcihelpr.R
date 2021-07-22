@@ -187,6 +187,7 @@ abci_set_work_directory = function(abci_remote_dir=NULL, abci_local_dir=NULL){
 #' @param tune_folds resample object (rest() object) for tuning
 #' @param pkg_names  additional packages to load in the tuning script
 #' @param param_grid A data frame of tuning combinations
+#' @param fns character vector of function names to be exported
 #' @export abci_upload_params
 #'
 abci_upload_params = function(grid_tune_id = 1001, tune_wf, tune_folds, pkg_names=NULL, param_grid, fns=NULL){

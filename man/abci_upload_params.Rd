@@ -9,7 +9,8 @@ abci_upload_params(
   tune_wf,
   tune_folds,
   pkg_names = NULL,
-  param_grid
+  param_grid,
+  fns = NULL
 )
 }
 \arguments{
