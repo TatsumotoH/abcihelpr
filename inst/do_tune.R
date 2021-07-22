@@ -4,6 +4,7 @@
 library(tidymodels)
 library(embed)
 
+
 #source("RecipeSteps.R")
 #source("AdditionalTunes.R")
 
@@ -31,6 +32,10 @@ tune_wf = saved_obj$tune_wf
 tune_folds = saved_obj$tune_folds
 pkg_names = saved_obj$pkg_names
 param_grid = saved_obj$param_grid
+
+#load functions from envriontment variable e1
+e1 = saved_obj$e1
+for(n in ls(e1, all.names = T)){ assign(n, get(n, e1), globalenv())}
 
 
 #load additional packages
