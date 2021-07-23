@@ -20,8 +20,8 @@ grid_tune_start = args[2]
 grid_tune_end = args[3]
 
 cat(paste0("f_grid_tune_id=", f_grid_tune_id))
-cat(paste0("grid_tune_start=", f_grid_tune_start))
-cat(paste0("grid_tune_end=", f_grid_tune_end))
+cat(paste0("grid_tune_start=", grid_tune_start))
+cat(paste0("grid_tune_end=", grid_tune_end))
 
 
 param_file = paste0("./params/tune_", f_grid_tune_id, ".Rdata")
@@ -60,8 +60,8 @@ if( grid_tune_end == -1){
 }
 
 cat("set trg_grid_param")
-cat(paste0("grid_tune_start=", f_grid_tune_start))
-cat(paste0("grid_tune_end=", f_grid_tune_end))
+cat(paste0("grid_tune_start=", grid_tune_start))
+cat(paste0("grid_tune_end=", grid_tune_end))
 
 #extract target grid_param
 trg_grid_param = param_grid[grid_tune_start:grid_tune_end, ]
