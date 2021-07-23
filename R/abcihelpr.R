@@ -313,8 +313,9 @@ abci_submit_job_to_qsub = function(grid_tune_id, grid_tune_start=1, grid_tune_en
 #'
 #' @param grid_tune_id grid_tune_id
 #' @param num_workers number of workers. integer.
+#' @param param_grid parameter grid
 #' @export abci_submit_job_for_workers
-abci_submit_job_for_workers = function(grid_tune_id = NULL, num_workers=1) {
+abci_submit_job_for_workers = function(grid_tune_id = NULL, param_grid, num_workers=1) {
 
   x =  seq(1, dim(param_grid)[1]) #index for a whole grid
   d = num_workers # num_workers
