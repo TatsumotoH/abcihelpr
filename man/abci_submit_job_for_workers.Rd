@@ -4,10 +4,12 @@
 \alias{abci_submit_job_for_workers}
 \title{split a job into n works and submit them to qsub (batch query)}
 \usage{
-abci_submit_job_for_workers(grid_tune_id = NULL, num_workers = 1)
+abci_submit_job_for_workers(grid_tune_id = NULL, param_grid, num_workers = 1)
 }
 \arguments{
 \item{grid_tune_id}{grid_tune_id}
+
+\item{param_grid}{parameter grid}
 
 \item{num_workers}{number of workers. integer.}
 }
