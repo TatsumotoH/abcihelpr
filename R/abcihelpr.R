@@ -42,6 +42,9 @@ abci_init = function(){
                                                                  abci_local_dir = abci_config$abci_local_dir))
   abci_config$abci_local_output_dir <<- fs::path_expand(glue::glue("{abci_local_dir}/output",
                                                                  abci_local_dir = abci_config$abci_local_dir))
+
+  # number of parallel processing
+  abci_config$ppn <<- 4
 }
 
 #' set abci group account
@@ -109,6 +112,16 @@ set_ssh_config = function(path_ssh_config, abci_remote_host){
 set_mailaddr = function(mailaddr){
 
   abci_config$emailaddr <<- mailaddr
+
+}
+
+#' set the number of parallel processing per job
+#' @param ppn number of parallel processing
+#' @export
+#'
+set_ppn = function(ppn){
+
+  abci_config$ppn <<- ppn
 
 }
 
@@ -372,6 +385,7 @@ abci_submit_job_to_qsub = function(grid_tune_id, grid_tune_start=1, grid_tune_en
                     "-o",
                     shQuote(abci_config$abci_remote_output_dir),
                     # "-l rt_C.small=1",
+                    paste0("-l ", "nodes=1:ppn=", abci_config$ppn),
                     # "-g", abci_config$abci_group_account,
                     "-m e",
                     ifelse(abci_config$emailaddr != "", paste0("-M ", abci_config$emailaddr), ""),
