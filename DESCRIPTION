@@ -1,11 +1,11 @@
 Package: abcihelpr
 Type: Package
 Title: helper functions for using ABCI (AI Bridging Cloud Infrastructure) 
-Version: 0.0.90
+Version: 0.0.91
 Author: TatsumotoH
 Maintainer: TatsumotoH <hirofumi.tatsumoto@gmail.com>
 Description: helper functions for using ABCI
-    This package helps integratedlly computing machine learning workflows in local (your machine) and remote (ABCI).
+    This package helps integratedlly computing machine learning workflows in local (your machine) and remote (ABCI or other hosts).
     Machine learning workflows have time consuming part, such as hyper parameter searching. 
     With this package, you can code a workflow in local, and throw the hyper parameter search to remote (ABCI). 
     After finishing the searching hyper parameters in remote, you fetch the results into local and use them in tidymodels::workflowsets format.
