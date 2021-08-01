@@ -146,6 +146,7 @@ print_config = function(){
   cat("abci_ssh_cmd: ", abci_config$abci_ssh_cmd, "\n")
   cat("abci_scp_cmd: ", abci_config$abci_scp_cmd, "\n")
 
+  cat("ppn:", abci_config$ppn, "\n")
 }
 
 

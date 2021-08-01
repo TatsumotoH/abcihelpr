@@ -6,6 +6,9 @@
 \usage{
 set_ppn(ppn)
 }
+\arguments{
+\item{ppn}{number of parallel processing}
+}
 \description{
 set the number of parallel processing per job
 }
