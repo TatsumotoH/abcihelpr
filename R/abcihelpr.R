@@ -191,7 +191,7 @@ abci_set_work_directory = function(abci_remote_dir=NULL, abci_local_dir=NULL){
                      file = path_ssh_config)
 
   #store the location of ssh file to abci_config
-  abci_config$ssh_config_file = path_ssh_config
+  abci_config$ssh_config_file <<- path_ssh_config
 
 
   #create work directory in remote machine
