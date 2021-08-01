@@ -19,6 +19,8 @@ abci_init = function(){
   abci_config$ssh_config_file <<- fs::path_expand("~/.ssh/config")
   abci_config$ssh_identity_file <<- fs::path_expand("~/.ssh/id_rsa")
 
+  abci_config$emailaddr <<- ""
+
   abci_config$abci_ssh_cmd <<- "ssh"
   abci_config$abci_scp_cmd <<- "scp"
 
@@ -26,6 +28,7 @@ abci_init = function(){
 
   abci_config$abci_remote_dir <<- "~/.tune"
   abci_config$abci_local_dir <<- fs::path_expand("~/.tune")
+
 
 
   #remoteはabciでlinux決め打ち
@@ -99,7 +102,15 @@ set_ssh_config = function(path_ssh_config, abci_remote_host){
 
 }
 
+#' set mail addr to notify the end of the task
+#' @param emailaddr mail address eg. xxxx@yyy.com
+#' @export
+#'
+set_mailaddr = function(mailaddr){
 
+  abci_config$emailaddr <<- mailaddr
+
+}
 
 
 #' print current configuration for abci
@@ -363,6 +374,7 @@ abci_submit_job_to_qsub = function(grid_tune_id, grid_tune_start=1, grid_tune_en
                     # "-l rt_C.small=1",
                     # "-g", abci_config$abci_group_account,
                     "-m e",
+                    ifelse(abci_config$emailaddr != "", paste0("-M ", abci_config$emailaddr), ""),
                     "-N",
                     paste0("gti_",grid_tune_id),
                     "-v",
