@@ -90,7 +90,7 @@ set_ssh_identity = function(path_ssh_identity){
 #' change ssh config file
 #' @param path_ssh_config path to ssh identity
 #' @param abci_remote_host remote host to connect
-#' @export set_ssh_identity
+#' @export set_ssh_config
 #'
 set_ssh_config = function(path_ssh_config, abci_remote_host){
 
